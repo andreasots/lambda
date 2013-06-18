@@ -6,8 +6,10 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
-#include "Display.h"
 #include "ARB_debug_output_callback.h"
+#include "Color.h"
+#include "Display.h"
+#include "Scene.h"
 
 Display* Display::_instance = nullptr;
 
@@ -21,18 +23,22 @@ void Display::init(int& argc, char** argv, int w, int h) {
   _tex_width = _width = w;
   _tex_height = _height = h;
 
+  _framebuffer = new Color[_tex_width*_tex_height];
+
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutInitWindowSize(w, h);
   glutCreateWindow(argv[0]);
 
-  GLenum error;
-  if ((error = glewInit()) != GLEW_OK)
-    throw std::runtime_error(
-        reinterpret_cast<const char*>(glewGetErrorString(error)));
-
-  if (GLEW_ARB_debug_output)
-    glDebugMessageCallbackARB(ARB_debug_output_callback, nullptr);
+  {
+    GLenum error;
+    if ((error = glewInit()) != GLEW_OK)
+      std::fprintf(stderr, "GLEW error: %s\n", glewGetErrorString(error));
+    else if (GLEW_ARB_debug_output) {
+      std::printf("Enabling GL_ARB_debug_output\n");
+      glDebugMessageCallbackARB(ARB_debug_output_callback, nullptr);
+    }
+  }
   
   glutReshapeFunc([](int w, int h){_instance->reshape(w, h);});
   glutDisplayFunc([](){_instance->draw();});
@@ -44,6 +50,18 @@ void Display::init(int& argc, char** argv, int w, int h) {
       GL_RGBA, GL_FLOAT, nullptr);
   glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  {
+    std::random_device device;
+    std::uniform_int_distribution<decltype(_engine)::result_type> distrib;
+    _engine.seed(distrib(device));
+  } 
+
+  update();
+}
+
+void Display::scene(const Scene* scene) {
+  _scene = scene;
 }
 
 [[noreturn]] void Display::run() {
@@ -100,14 +118,16 @@ void Display::draw() {
   glutSwapBuffers();
 }
 
-void Display::idle() {
-  float *c = new float[4*_tex_width*_tex_height];
-  for (int i = 0; i < 4*_tex_width*_tex_height; i++)
-    c[i] = drand48();
-
+void Display::update() {
+  glutTimerFunc(40, [](int){_instance->update();}, 0);
   glBindTexture(GL_TEXTURE_RECTANGLE, _textures[0]);
-  glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, _tex_width, _tex_height, GL_RGBA, GL_FLOAT, c);
+  glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, _tex_width, _tex_height,
+      GL_RGBA, GL_FLOAT, _framebuffer);
   glutPostRedisplay();
-  delete[] c;
 }
 
+void Display::idle() {
+  std::uniform_real_distribution<float> distrib;
+  for (int i = 0; i < _tex_width*_tex_height; i++)
+    _framebuffer[i] = Color(distrib(_engine), distrib(_engine), distrib(_engine));
+}

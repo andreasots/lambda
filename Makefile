@@ -1,7 +1,7 @@
 pkgconfig := gl glew 
 CXXFLAGS := -std=c++11 $(CXXFLAGS) $(shell pkg-config --cflags $(pkgconfig))
 LDFLAGS := $(LDFLAGS) $(shell pkg-config --libs $(pkgconfig)) -lglut
-liblambda := ARB_debug_output_callback.o Display.o 
+liblambda := ARB_debug_output_callback.o Color.o Display.o 
 
 .PHONY: all clean
 
