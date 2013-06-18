@@ -101,15 +101,13 @@ void Display::draw() {
 }
 
 void Display::idle() {
-  float c[4];
+  float *c = new float[4*_tex_width*_tex_height];
+  for (int i = 0; i < 4*_tex_width*_tex_height; i++)
+    c[i] = drand48();
+
   glBindTexture(GL_TEXTURE_RECTANGLE, _textures[0]);
-  for (int y = 0; y < _tex_height; y++) {
-    for (int x = 0; x < _tex_width; x++) {
-      for (int i = 0; i < 4; i++)
-        c[i] = 0.5-drand48();
-      glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, x, y, 1, 1, GL_RGBA, GL_FLOAT, c);
-    }
-  }
+  glTexSubImage2D(GL_TEXTURE_RECTANGLE, 0, 0, 0, _tex_width, _tex_height, GL_RGBA, GL_FLOAT, c);
   glutPostRedisplay();
+  delete[] c;
 }
 
