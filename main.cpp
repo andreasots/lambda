@@ -6,8 +6,10 @@
 
 [[noreturn]] int main(int argc, char** argv) {
   try {
-    Scene scene(argv[1]);
     Display::instance().init(argc, argv);
+    if (argc != 2)
+      throw std::runtime_error("Wrong number of arguments");
+    Scene scene(argv[1]);
     Display::instance().scene(&scene);
     Display::instance().run();
   } catch (const std::exception& e) {
