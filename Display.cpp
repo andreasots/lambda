@@ -24,6 +24,7 @@ void Display::init(int& argc, char** argv, int w, int h) {
   _tex_height = _height = h;
 
   _framebuffer = new Color[_tex_width*_tex_height];
+  idle();
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
