@@ -1,0 +1,7 @@
+#ifndef CONFIG_H_
+#define CONFIG_H_
+
+#cmakedefine HAVE_STD_MAXALIGN_T
+#cmakedefine HAVE_MAX_ALIGN_T
+
+#endif

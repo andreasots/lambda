@@ -15,7 +15,7 @@ void Scene::open(const std::string& filename) {
     Json::Reader reader;
     std::ifstream file(filename);
     if (!reader.parse(file, root))
-      throw std::runtime_error(reader.getFormattedErrorMessages());
+      throw std::runtime_error(reader.getFormatedErrorMessages());
   }
   if (!root.isConvertibleTo(Json::objectValue))
     throw std::runtime_error("Root not convertible to object.");

@@ -3,7 +3,9 @@
 
 #include <xmmintrin.h>
 
-class Color {
+#include "aligned_new.h"
+
+class alignas(16) Color : public aligned_new<16> {
  public:
   Color() = default;
   Color(float r, float g, float b, float a = 1.0f);

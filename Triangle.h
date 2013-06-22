@@ -9,7 +9,7 @@ struct IntersectData;
 class Ray;
 class RayPacket;
 
-class Triangle {
+class alignas(16) Triangle {
  public:
   Triangle();
   std::array<IntersectData, 4> intersect(const RayPacket&) const;
