@@ -24,6 +24,8 @@ void Display::init(int& argc, char** argv, int w, int h) {
   _tex_height = _height = h;
 
   _framebuffer = new Color[_tex_width*_tex_height];
+  for (std::size_t i = 0; i < _tex_width*_tex_height; i++)
+    _framebuffer[i] = Color(0.0f, 0.0f, 0.0f);
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);

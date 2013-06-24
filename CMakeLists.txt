@@ -12,6 +12,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(JsonCpp REQUIRED)
+find_package(assimp REQUIRED)
 
 include (CheckCXXSourceCompiles)
 CHECK_CXX_SOURCE_COMPILES(
@@ -27,6 +28,7 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 include_directories(${GLUT_INCLUDE_DIRS})
 include_directories(${GLEW_INCLUDE_DIRS})
 include_directories(${JSONCPP_INCLUDE_DIRS})
+include_directories(${ASSIMP_INCLUDE_DIRS})
 include_directories(${CMAKE_BINARY_DIR})
 configure_file("${PROJECT_SOURCE_DIR}/config.h.in"
   "${CMAKE_BINARY_DIR}/config.h")
@@ -35,5 +37,5 @@ file(GLOB src *.cpp)
 
 add_executable(lambda ${src})
 target_link_libraries(lambda ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES}
-  ${GLEW_LIBRARIES} ${JSONCPP_LIBRARIES})
+  ${GLEW_LIBRARIES} ${JSONCPP_LIBRARIES} ${ASSIMP_LIBRARIES})
 

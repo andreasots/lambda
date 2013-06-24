@@ -71,7 +71,6 @@ template <std::size_t align> class aligned_new_helper<align, false> {
       *(reinterpret_cast<void**>(ret)-1) = mem;
       return ret;
     }
-
 #endif
   }
 
@@ -95,7 +94,8 @@ template <std::size_t align> class aligned_new_helper<align, false> {
 };
 
 template <std::size_t align> class aligned_new :
-  public aligned_new_helper<align, alignof(std::max_align_t) >= align> {
+    public aligned_new_helper<align, alignof(std::max_align_t) >= align> {
+  static_assert(!(align & (align-1)), "Alignment must be a power of 2");
 };
 
 #endif
